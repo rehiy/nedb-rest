@@ -3,7 +3,7 @@
         "users": {
             "admin": "admin"
         },
-        "realm": "a1B2c3",
+        "realm": "a1b2c3",
         "challenge": true
     },
     "datastore": [

@@ -1,12 +1,12 @@
 var express = require('express');
 var expressAuth = require('express-basic-auth');
-var expressNedbRest = require('../main/rest')();
+var expressNedbRest = require('./main/rest')();
 
 var options = require(
-    process.env.OPTIONS || process.cwd() + '/options.json'
+    process.env.OPTFILE || __dirname + '/options.json'
 );
-var webroot = options.webroot || process.cwd() + '/public';
-var webport = options.webport || 8010;
+var webroot = process.env.WEBROOT || options.webroot || __dirname + '/public';
+var webport = process.env.WEBPORT || options.webport || 8010;
 
 ///////////////////////////////////////////////////////////////////////
 
@@ -31,5 +31,7 @@ app.get('*', function (req, res) {
 
 app.listen(webport, function () {
     console.log('you may use nedb rest api at port', webport);
-    console.log('\n');
+    console.log('\n\n');
 });
+
+module.exports = app;
