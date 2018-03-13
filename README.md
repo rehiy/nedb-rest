@@ -6,9 +6,14 @@ This can be used i.e. for HTML5 applications.
 
 ## Quick start
 Following code snippet starts an express server, which serves nedb api at port 8010.
+The authenticated account and password are all admin.
+You can edit `options.json` to modify it.
 
 ```
-npm install && npm run start
+npm install nedb-rest
+cp node_modules/nedb-rest/options.json ./
+
+nedb-rest
 ```
 
 ## API schema
