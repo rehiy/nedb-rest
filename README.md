@@ -6,8 +6,8 @@ This can be used i.e. for HTML5 applications.
 
 ## Quick start
 Following code snippet starts an express server, which serves nedb api at port 8010.
-The authenticated account and password are all admin.
-You can edit `options.json` to modify it.
+
+The authenticated account and password are all admin.You can edit `options.json` to modify it.
 
 ```
 npm install nedb-rest
@@ -96,7 +96,7 @@ A filter consists of one or more conditions, which are linked with logical and/o
 Filters are set by the $filter parameter. The string will be parsed and transformed to a NeDB filter object.
 Filters has format <fieldname> <operator> <value>. Values may be a String, Boolean, Number, Date or Array.
 
-If you compare with a date value, please define it as ISO-8601 string (i.e. 2017-04-06T08:39:44.016Z). Please refer to section "[Date Objects](#date-object)"
+If you compare with a date value, please define it as ISO-8601 string (i.e. 2017-04-06T08:39:44.016Z).
 
 For the operators $in and $nin an array must be given as value. Currently this array cannot obtain a single value.
 Arrays are delimited by `,`. Another constraint is that an array can only contain a single type of either String of Number.
