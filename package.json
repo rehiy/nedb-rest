@@ -1,0 +1,33 @@
+{
+    "name": "nedb-rest",
+    "version": "1.1.5",,
+    "author": {
+        "name": "Anrip Wong",
+        "email": "mail@anrip.com",
+        "url": "http://www.anrip.com/"
+    },
+    "homepage": "https://github.com/anrip/nedb-rest",
+    "description": "REST api for nedb database implemented in nodejs, based on express http server",
+    "license": "Apache License Version 2.0",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/anrip/nedb-rest.git"
+    },
+    "keywords": [
+        "nedb",
+        "express",
+        "rest",
+        "api",
+        "nodejs"
+    ],
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "body-parser": "^1.18.2",
+        "express": "^4.16.2",
+        "express-basic-auth": "^1.1.4",
+        "jison": "^0.4.18",
+        "nedb": "^1.8.0"
+    }
+}

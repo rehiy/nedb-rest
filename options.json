@@ -1,0 +1,29 @@
+{
+    "auth": {
+        "users": {
+            "admin": "admin"
+        },
+        "realm": "a1B2c3",
+        "challenge": true
+    },
+    "datastore": [
+        [
+            "test1",
+            {
+                "filename": "storage/test1.db",
+                "timestampData": true,
+                "autoload": true
+            }
+        ],
+        [
+            "test2",
+            {
+                "filename": "storage/test2.db",
+                "timestampData": true,
+                "autoload": true
+            }
+        ]
+    ],
+    "webroot": "",
+    "webport": ""
+}
