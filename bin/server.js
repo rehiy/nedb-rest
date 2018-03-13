@@ -1,11 +1,11 @@
 var express = require('express');
 var expressAuth = require('express-basic-auth');
-var expressNedbRest = require('./nedb-router')();
+var expressNedbRest = require('../main/rest')();
 
 var options = require(
     process.env.OPTIONS || process.cwd() + '/options.json'
 );
-var webroot = options.webroot || process.cwd() + '/www';
+var webroot = options.webroot || process.cwd() + '/public';
 var webport = options.webport || 8010;
 
 ///////////////////////////////////////////////////////////////////////
