@@ -23,7 +23,5 @@
                 "autoload": true
             }
         ]
-    ],
-    "webroot": "",
-    "webport": ""
+    ]
 }

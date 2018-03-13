@@ -1,15 +1,19 @@
+var fs = require('fs');
+
 var express = require('express');
 var expressAuth = require('express-basic-auth');
 var expressNedbRest = require('./main/rest')();
 
-var options = require(
-    process.env.OPTFILE || __dirname + '/options.json'
-);
-var webroot = process.env.WEBROOT || options.webroot || __dirname + '/public';
-var webport = process.env.WEBPORT || options.webport || 8010;
+var optfile = process.env.OPTFILE || process.cwd() + '/options.json';
+var webroot = process.env.WEBROOT || process.cwd() + '/public';
+var webport = process.env.WEBPORT || 8010;
+
+fs.existsSync(optfile) || (optfile = __dirname + '/options.json');
+fs.existsSync(webroot) || (webroot = __dirname + '/public');
 
 ///////////////////////////////////////////////////////////////////////
 
+var options = require(optfile);
 var app = express();
 
 if (options.auth) {
