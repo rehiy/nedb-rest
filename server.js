@@ -15,30 +15,31 @@ fs.existsSync(webroot) || (webroot = __dirname + '/public');
 
 //--------------------------------------------------------------------------
 
-var options = require(optfile);
 var app = express();
+var options = require(optfile);
 
 if (options.auth) {
     app.use('*', expressAuth(options.auth));
 }
 
-if (options.datastore) {
-    options.datastore.forEach(function (args) {
-        args[1].filename = datadir + '/' + args[1].filename;
-        expressNedbRest.addDatastore(args[0], args[1]);
-    });
-    app.use('/nedb', expressNedbRest);
+if (options.hook) {
+    options.hook = datadir + '/' + options.hook;
+    app.use('/hook', require(options.hook)());
 }
 
-app.use(express.static(webroot));
+options.datastore.forEach(function (args) {
+    args[1].filename = datadir + '/' + args[1].filename;
+    expressNedbRest.addDatastore(args[0], args[1]);
+});
+app.use('/nedb', expressNedbRest);
 
+app.use(express.static(webroot));
 app.get('*', function (req, res) {
     res.sendFile(webroot + '/index.html');
 });
 
+app.disable('x-powered-by');
 app.listen(webport, function () {
     console.log('you may use nedb rest api at port', webport);
     console.log('\n\n');
 });
-
-module.exports = app;
