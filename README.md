@@ -73,7 +73,7 @@ You can also update multiple documents by calling a PUT command without _id. You
 Changing multiple documents makes only sense in combination with update operations like $set. Otherwise all documents of a collection will have the same content.
 
 ```
-HTTP PUT /nedb/fruits?$filter={"name":{"$regex":"/berry/"}}
+HTTP PUT /nedb/fruits?$filter={"name":{"$regex":"berry"}}
 {"$set":{"discount":0.12}}
 ```
 
@@ -88,7 +88,7 @@ If you omit the _id, you must define [$filter](#$filter) parameter, to specify a
 Otherwise the server will respond with error status 405. This shall protect you to delete all documents by accident.
 
 ```
-HTTP DELETE /nedb/fruits?$filter={"name":{"$regex":"/berry/"}}
+HTTP DELETE /nedb/fruits?$filter={"name":{"$regex":"berry"}}
 ```
 
 ## <a name="$filter">Query parameter $filter</a>
