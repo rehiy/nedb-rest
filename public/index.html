@@ -9,50 +9,31 @@
             vertical-align: top;
         }
     </style>
-    <script type="text/javascript">
-        function rest(form) {
-            form.response.value = '';
-            form.status.value = '';
-            var verb = form.verb.value;
-            var xhr = new XMLHttpRequest();
-            var uri = encodeURI('/nedb/' + form.url.value);
-            xhr.open(verb, uri, true);
-            xhr.onreadystatechange = function () {
-                form.status.value = xhr.status;
-                if (xhr.readyState == 4) {
-                    form.response.value = xhr.responseText;
-                }
-            };
-            xhr.setRequestHeader('Content-type', 'application/json');
-            xhr.send(form.request.value);
-            return false;
-        }
-        function sample(verb, url, data) {
-            var form = document.forms[0];
-            form.verb.value = verb;
-            form.url.value = url || '';
-            form.request.value = data ? JSON.stringify(data) : '';
-            rest(form);
-        }
-    </script>
 </head>
 
 <body>
     <h2>
         <a href="https://github.com/anrip/nedb-rest">nedb-rest</a>
     </h2>
-    <form onsubmit="javascript:return rest(this)">
+
+    <form onsubmit="return false">
         <fieldset>
             <legend>Request</legend>
-            <label>URL /nedb/</label>
-            <input name="url" size="50">
+            <label>URL</label>
             <select name="verb">
                 <option selected>GET</option>
                 <option>POST</option>
                 <option>PUT</option>
                 <option>DELETE</option>
             </select>
-            <button type="submit">Submit</button>
+            <input name="url" value="/nedb/fruits" size="50">
+            <input type="button" value="submit" onclick="rest()" />
+            <br>
+            <label>Filter</label>
+            <textarea name="filter" cols=80 rows=3></textarea>
+            <br>
+            <label>Oderby</label>
+            <textarea name="orderby" cols=80 rows=3></textarea>
             <br>
             <label>JSON Data</label>
             <textarea name="request" cols=80 rows=10></textarea>
@@ -63,59 +44,41 @@
             <input name="status" readonly />
             <br/>
             <label>Repsonse</label>
-            <textarea name="response" cols=80 rows=10 readonly></textarea>
-        </fieldset>
-        <fieldset>
-            <legend>Samples</legend>
-            <ol>
-                <li>
-                    <a href="javascript:sample('GET', '')">
-                        list of collections (GET /)
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:sample('GET', 'test1')">
-                        read fruit collection (GET /test1)
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:sample('GET', 'test1?$filter=color $eq red')">
-                        reads all red test1 (GET /test1?$filter=color $eq red)
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:sample('GET', 'test1?$filter=$exists discount')">
-                        get test1 with discount (GET /test1?$filter=$exists discount)
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:sample('GET', 'test1?$orderby=price desc')">
-                        sort test1 by descending price(GET /test1?$orderby=price desc)
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:sample('GET', 'test1?$filter=name $eq apple&$count')">
-                        count apple documents (GET /test1?$filter=name $eq apple&$count)
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:sample('DELETE', 'test1?$filter=name $eq \'apple\'')">
-                        delete all apples (DELETE /test1?$filter=...)
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:sample('POST', 'test1', {'name':'apple','color':'yellow',price:2.49})">
-                        add a new apple (POST /test1)
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript:sample('PUT', 'test1?$filter=name $regex berry', {'$set':{'discount':0.10}})">
-                        set discount to all berries (PUT {'$set':{'discount':0.10}})
-                    </a>
-                </li>
-            </ol>
+            <textarea name="response" cols=80 rows=15 readonly></textarea>
         </fieldset>
     </form>
+
+    <script type="text/javascript">
+        function rest() {
+            var form = document.querySelector('form');
+            var url = form.url.value;
+            var verb = form.verb.value;
+            var param = [];
+            if (form.filter.value) {
+                param.push('$filter=' + encodeURIComponent(form.filter.value));
+            }
+            if (form.orderby.value) {
+                param.push('$orderby=' + encodeURIComponent(form.orderby.value));
+            }
+            if (param.length > 0) {
+                url += (url.indexOf('?') ? '&' : '?') + param.join('&');
+            }
+            // request the api
+            form.status.value = '';
+            form.response.value = '';
+            var xhr = new XMLHttpRequest();
+            xhr.open(verb, url, true);
+            xhr.onreadystatechange = function () {
+                form.status.value = xhr.status;
+                if (xhr.readyState == 4) {
+                    form.response.value = xhr.responseText;
+                }
+            };
+            xhr.setRequestHeader('Content-type', 'application/json');
+            xhr.send(form.request.value);
+            return false;
+        }
+    </script>
 </body>
 
 </html>

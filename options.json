@@ -3,22 +3,14 @@
         "users": {
             "admin": "admin"
         },
-        "realm": "a1b2c3",
+        "realm": "a1b2c3de",
         "challenge": true
     },
     "datastore": [
         [
-            "test1",
+            "fruits",
             {
-                "filename": "storage/test1.db",
-                "timestampData": true,
-                "autoload": true
-            }
-        ],
-        [
-            "test2",
-            {
-                "filename": "storage/test2.db",
+                "filename": "fruits.db",
                 "timestampData": true,
                 "autoload": true
             }

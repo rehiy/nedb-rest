@@ -1,5 +1,3 @@
-var order = require('./parser');
-
 module.exports = function (router, config) {
 
     function fullUrl(req, suffix) {
@@ -56,8 +54,8 @@ module.exports = function (router, config) {
         // parse orderby
         if (req.query.$orderby) {
             try {
-                var $order = order(req.query.$orderby);
-                if ($order) {
+                var $order = req.query.$orderby;
+                if ($order = JSON.parse(decodeURIComponent($order))) {
                     query.sort($order);
                 }
             }
@@ -139,7 +137,7 @@ module.exports = function (router, config) {
 
     //--------------------------------------------------------------------------
     router.delete('/:collection', function (req, res, next) {
-        if (!req.$filter || Object.keys(req.$filter).length == 0) {
+        if (Object.keys(req.$filter).length == 0) {
             return next({
                 status: 400, // Bad Request
                 message: '$filter is missing'

@@ -1,5 +1,3 @@
-var filter = require('./parser');
-
 module.exports = function (router, config) {
 
     // find datastore of collection and add it to request object
@@ -15,16 +13,21 @@ module.exports = function (router, config) {
             });
         }
 
-        try {
-            req.$filter = filter(req.query.$filter);
-            next();
+        if (req.query.$filter) {
+            try {
+                var $filter = req.query.$filter;
+                req.$filter = JSON.parse(decodeURIComponent($filter));
+            }
+            catch (e) {
+                next({
+                    status: 400, // Bad Request
+                    message: 'unvalid $filter ' + e.message
+                });
+            }
         }
-        catch (e) {
-            next({
-                status: 400, // Bad Request
-                message: 'unvalid $filter ' + e.message
-            });
-        }
+
+        req.$filter || (req.$filter = {});
+        next();
     });
 
     // add object id from uri to request
