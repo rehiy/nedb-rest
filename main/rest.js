@@ -9,15 +9,15 @@ module.exports = function (config) {
 
     var router = express.Router();
 
-    if (typeof config.collections != 'array') {
-        config.collections = [];
+    if (typeof config.collections != 'object') {
+        config.collections = {};
     }
 
     //  enabling cross domain calls
     router.all('*', function (req, res, next) {
         if (req.headers.origin) {
             res.set('Access-Control-Allow-Origin', req.headers.origin);
-            res.set('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,,PATCH');
+            res.set('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
             res.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
         }
         if ('OPTIONS' == req.method) {
