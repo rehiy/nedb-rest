@@ -62,6 +62,9 @@ module.exports = function () {
      * @param {object) NeDB Datastore options
      */
     router.addDatastore = function (collection, options) {
+        options.compareStrings = function (a, b) {
+            return (a + '').localeCompare(b);
+        };
         config.collections[collection] = new nedb(options);
     };
 

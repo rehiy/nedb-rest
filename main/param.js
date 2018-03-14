@@ -16,7 +16,9 @@ module.exports = function (router, config) {
         if (req.query.$filter) {
             try {
                 var $filter = req.query.$filter;
-                req.$filter = JSON.parse(decodeURIComponent($filter));
+                req.$filter = JSON.parse(decodeURIComponent($filter), function (k, v) {
+                    return k == '$regex' ? new RegExp(v) : v;
+                });
             }
             catch (e) {
                 next({
@@ -30,7 +32,7 @@ module.exports = function (router, config) {
         if (req.query.$orderby) {
             try {
                 var $orderby = req.query.$orderby;
-                req.$orderby = JSON.parse(decodeURIComponent($orderby);
+                req.$orderby = JSON.parse(decodeURIComponent($orderby));
             }
             catch (e) {
                 return next({
