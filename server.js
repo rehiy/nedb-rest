@@ -27,11 +27,11 @@ if (exists(plugmod)) {
     app.use('/plug', require(plugmod)(options));
 }
 
+app.use('/nedb', expressNedbRest);
 options.datastore.forEach(function (args) {
     args[1].filename = datadir + '/' + args[1].filename;
     expressNedbRest.addDatastore(args[0], args[1]);
 });
-app.use('/nedb', expressNedbRest);
 
 app.use(express.static(webroot));
 app.get('*', function (req, res) {
