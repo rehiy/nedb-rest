@@ -1,8 +1,4 @@
-var fs = require('fs');
-
-var express = require('express');
-var expressAuth = require('express-basic-auth');
-var expressNedbRest = require('./main/rest')();
+var exists = require('fs').existsSync;
 
 var optfile = process.env.OPTFILE || process.cwd() + '/options.json';
 var datadir = process.env.DATADIR || process.cwd() + '/storage';
@@ -10,20 +6,24 @@ var plugmod = process.env.PLUGMOD || process.cwd() + '/plugin';
 var webroot = process.env.WEBROOT || process.cwd() + '/public';
 var webport = process.env.WEBPORT || 8010;
 
-fs.existsSync(optfile) || (optfile = __dirname + '/options.json');
-fs.existsSync(datadir) || (datadir = __dirname + '/storage');
-fs.existsSync(webroot) || (webroot = __dirname + '/public');
+exists(optfile) || (optfile = __dirname + '/options.json');
+exists(datadir) || (datadir = __dirname + '/storage');
+exists(webroot) || (webroot = __dirname + '/public');
+
+var options = require(optfile);
+var express = require('express');
+var expressAuth = require('express-basic-auth');
+var expressNedbRest = require('./main/rest')(options);
 
 //--------------------------------------------------------------------------
 
 var app = express();
-var options = require(optfile);
 
 if (options.auth) {
     app.use('*', expressAuth(options.auth));
 }
 
-if (fs.existsSync(plugmod)) {
+if (exists(plugmod)) {
     app.use('/plug', require(plugmod)(options));
 }
 

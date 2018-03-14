@@ -5,13 +5,13 @@ var nedb = require('nedb');
 var addRestParams = require('./param');
 var addRestMethods = require('./method');
 
-module.exports = function () {
-
-    var config = {
-        collections: []
-    };
+module.exports = function (config) {
 
     var router = express.Router();
+
+    if (typeof config.collections != 'array') {
+        config.collections = [];
+    }
 
     //  enabling cross domain calls
     router.all('*', function (req, res, next) {
