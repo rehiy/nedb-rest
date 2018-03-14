@@ -112,7 +112,7 @@ Examples:
 
 ```HTTP GET /nedb/fruits?$filter={"color":"red"}```
 
-```HTTP GET /nedb/fruits?$filter={"color":["red","blue"]}```
+```HTTP GET /nedb/fruits?$filter={"color":{"$in":["red","blue"]}}```
 
 
 ## <a name="$orderby">Query parameter $orderby</a>
