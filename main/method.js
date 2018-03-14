@@ -1,12 +1,13 @@
 module.exports = function (router, config) {
 
-    function fullUrl(req, suffix) {
-        suffix = req.originalUrl.replace(/\/$/, '') + '/' + suffix;
-        return req.protocol + '://' + req.get('host') + suffix;
+    function fullUrl(req, url) {
+        var path = req.originalUrl.replace(/\/$/, '') + '/';
+        return req.protocol + '://' + req.get('host') + path + url;
     }
 
     //--------------------------------------------------------------------------
     router.get('/', function (req, res, next) {
+        // return an array with all collection's names
         res.locals.json = [];
         for (var name in config.collections) {
             res.locals.json.push({
@@ -51,20 +52,8 @@ module.exports = function (router, config) {
         }
         // normal query
         var query = req.nedb.find(req.$filter);
-        // parse orderby
-        if (req.query.$orderby) {
-            try {
-                var $order = req.query.$orderby;
-                if ($order = JSON.parse(decodeURIComponent($order))) {
-                    query.sort($order);
-                }
-            }
-            catch (e) {
-                return next({
-                    status: 400, // Bad Request
-                    message: 'unvalid $orderby ' + e.message
-                });
-            }
+        if (req.$orderby) {
+            query.sort(req.$orderby);
         }
         if (!isNaN(req.query.$skip)) {
             query.skip(parseInt(req.query.$skip));
@@ -119,23 +108,6 @@ module.exports = function (router, config) {
     });
 
     //--------------------------------------------------------------------------
-    router.delete('/:collection/:id', function (req, res, next) {
-        req.nedb.remove({ _id: req.id }, { multi: false }, function (err, count) {
-            if (err) {
-                return next(err);
-            }
-            if (count != 1) {
-                return next({
-                    status: 404, // Not found
-                    message: 'document ' + req.collection + ' _id=' + req.id + ' not found'
-                });
-            }
-            res.locals.count = count;
-            res.status(204).send('deleted entries: ' + count);
-        });
-    });
-
-    //--------------------------------------------------------------------------
     router.delete('/:collection', function (req, res, next) {
         if (Object.keys(req.$filter).length == 0) {
             return next({
@@ -159,14 +131,8 @@ module.exports = function (router, config) {
     });
 
     //--------------------------------------------------------------------------
-    router.put('/:collection/:id', function (req, res, next) {
-        if (!req.body || typeof (req.body) != 'object') {
-            return next({
-                status: 400, // Bad Request
-                message: 'No Request Body'
-            });
-        }
-        req.nedb.update({ _id: req.id }, req.body, { multi: false }, function (err, count) {
+    router.delete('/:collection/:id', function (req, res, next) {
+        req.nedb.remove({ _id: req.id }, { multi: false }, function (err, count) {
             if (err) {
                 return next(err);
             }
@@ -177,7 +143,7 @@ module.exports = function (router, config) {
                 });
             }
             res.locals.count = count;
-            res.status(204).send('updated entries: ' + count);
+            res.status(204).send('deleted entries: ' + count);
         });
     });
 
@@ -205,18 +171,26 @@ module.exports = function (router, config) {
     });
 
     //--------------------------------------------------------------------------
-    router.patch('/:collection', function (req, res, next) {
-        res.status(405).send(); // Method Not Allowed
-    });
-
-    //--------------------------------------------------------------------------
-    router.delete('/:collection', function (req, res, next) {
-        res.status(405).send(); // Method Not Allowed
-    });
-
-    //--------------------------------------------------------------------------
-    router.post('/:collection/:id', function (req, res, next) {
-        res.status(405).send(); // Method Not Allowed
+    router.put('/:collection/:id', function (req, res, next) {
+        if (!req.body || typeof (req.body) != 'object') {
+            return next({
+                status: 400, // Bad Request
+                message: 'No Request Body'
+            });
+        }
+        req.nedb.update({ _id: req.id }, req.body, { multi: false }, function (err, count) {
+            if (err) {
+                return next(err);
+            }
+            if (count != 1) {
+                return next({
+                    status: 404, // Not found
+                    message: 'document ' + req.collection + ' _id=' + req.id + ' not found'
+                });
+            }
+            res.locals.count = count;
+            res.status(204).send('updated entries: ' + count);
+        });
     });
 
 };

@@ -25,8 +25,21 @@ module.exports = function (router, config) {
                 });
             }
         }
-
         req.$filter || (req.$filter = {});
+
+        if (req.query.$orderby) {
+            try {
+                var $orderby = req.query.$orderby;
+                req.$orderby = JSON.parse(decodeURIComponent($orderby);
+            }
+            catch (e) {
+                return next({
+                    status: 400, // Bad Request
+                    message: 'unvalid $orderby ' + e.message
+                });
+            }
+        }
+
         next();
     });
 

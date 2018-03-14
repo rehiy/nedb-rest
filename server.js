@@ -13,7 +13,7 @@ fs.existsSync(optfile) || (optfile = __dirname + '/options.json');
 fs.existsSync(datadir) || (datadir = __dirname + '/storage');
 fs.existsSync(webroot) || (webroot = __dirname + '/public');
 
-///////////////////////////////////////////////////////////////////////
+//--------------------------------------------------------------------------
 
 var options = require(optfile);
 var app = express();
