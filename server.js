@@ -6,6 +6,7 @@ var expressNedbRest = require('./main/rest')();
 
 var optfile = process.env.OPTFILE || process.cwd() + '/options.json';
 var datadir = process.env.DATADIR || process.cwd() + '/storage';
+var plugmod = process.env.PLUGMOD || process.cwd() + '/plugin';
 var webroot = process.env.WEBROOT || process.cwd() + '/public';
 var webport = process.env.WEBPORT || 8010;
 
@@ -22,9 +23,8 @@ if (options.auth) {
     app.use('*', expressAuth(options.auth));
 }
 
-if (options.hook) {
-    options.hook = datadir + '/' + options.hook;
-    app.use('/hook', require(options.hook)());
+if (fs.existsSync(plugmod)) {
+    app.use('/plug', require(plugmod)(options));
 }
 
 options.datastore.forEach(function (args) {
