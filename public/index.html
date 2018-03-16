@@ -58,7 +58,7 @@
                 param.push('$filter=' + encodeURIComponent(form.filter.value));
             }
             if (form.orderby.value) {
-                param.push('$orderby=' + encodeURIComponent(form.orderby.value));
+                param.push('$sort=' + encodeURIComponent(form.orderby.value));
             }
             if (param.length > 0) {
                 url += (url.indexOf('?') ? '&' : '?') + param.join('&');

@@ -27,7 +27,7 @@ The following table gives a quick overview of possible commands.
 | URL              | Method | Notes                                                                    |
 |----------------- | ------ | ------------------------------------------------------------------------ |
 | /nedb                | GET    | get list of collections (= datastores)                                   |
-| /nedb/:collection     | GET    | search documents in a collection (uses query parameter $filter $orderby) |
+| /nedb/:collection     | GET    | search documents in a collection (uses query parameter $filter $sort) |
 | /nedb/:collection/:id | GET    | retrieve a single document                                               |
 | /nedb/:collection     | POST   | create a single document                                                 |
 | /nedb/:collection/:id | PUT    | update a single document                                                 |
@@ -50,10 +50,10 @@ HTTP GET /nedb/fruits/J1t1kMDp4PWgPfhe
 ```
 
 You can also query multiple documents and set a [$filter](#$filter) as parameter. In that case the response contains an array of document objects (JSON formatted).
-You may also get an empty array, if no document matches the filter. The result can be sorted with parameter [$orderby](#$orderby)
+You may also get an empty array, if no document matches the filter. The result can be sorted with parameter [$sort](#$sort)
 
 ```
-HTTP GET /nedb/fruits?$filter={"price":{"$lt":3.00}}&$orderby={"price":-1}
+HTTP GET /nedb/fruits?$filter={"price":{"$lt":3.00}}&$sort={"price":-1}
 ```
 
 ## <a name="updating-documents">Updating Documents</a>
@@ -115,8 +115,8 @@ Examples:
 ```HTTP GET /nedb/fruits?$filter={"color":{"$in":["red","blue"]}}```
 
 
-## <a name="$orderby">Query parameter $orderby</a>
-You may sort the result of a query with "$orderby" parameter.
+## <a name="$sort">Query parameter $sort</a>
+You may sort the result of a query with "$sort" parameter.
 You can use it in [reading](#reading-documents) (GET) operations only.
 The parameter may contain multiple fieldnames concatenated by commas (,).
 Each fieldname can be followed by keyword `1` or `-1` to define sorting direction.
@@ -124,9 +124,9 @@ Ascending is default direction, so you may omit it.
 
 Examples:
 
-```HTTP GET /nedb/fruits?$orderby={"price":1}```
+```HTTP GET /nedb/fruits?$sort={"price":1}```
 
-```HTTP GET /nedb/fruits?$filter={"color":"red"}&$orderby={"price":1}```
+```HTTP GET /nedb/fruits?$filter={"color":"red"}&$sort={"price":1}```
 
 ## <a name="$count">Query parameter $count</a>
 If you append $count parameter to a query, the server returns the number of of matching documents instead of a result set.
@@ -139,7 +139,7 @@ Example:
 
 ## <a name="pagination">Query parameter $skip and $limit</a>
 If you want to fetch results in several packages, you may use pagination parameters $skip and $limit.
-They should be used together with [$orderby](#$orderby) parameter.  
+They should be used together with [$sort](#$sort) parameter.  
 Parameter $skip sets the count of documents, which will be deleteted from the beginning of result set.  
 Parameter $limit sets maximal count of documents in the result set.  
 You can use this parameter in [reading](#reading-documents) (GET) operations only.

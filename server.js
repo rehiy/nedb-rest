@@ -13,7 +13,7 @@ exists(webroot) || (webroot = __dirname + '/public');
 var options = require(optfile);
 var express = require('express');
 var expressAuth = require('express-basic-auth');
-var expressNedbRest = require('./main/rest')(options);
+var expressNedbRest = require('./main')(options);
 
 //--------------------------------------------------------------------------
 

@@ -1,16 +1,17 @@
-var bodyParser = require('body-parser');
+
 var express = require('express');
 var nedb = require('nedb');
 
-var addRestParams = require('./param');
-var addRestMethods = require('./method');
+var util = require('./util');
+var setRestParams = require('./param');
+var setRestMethods = require('./method');
 
-module.exports = function (config) {
+module.exports = function (options) {
 
     var router = express.Router();
 
-    if (typeof config.collections != 'object') {
-        config.collections = {};
+    if (typeof options.collections != 'object') {
+        options.collections = {};
     }
 
     //  enabling cross domain calls
@@ -21,39 +22,38 @@ module.exports = function (config) {
             res.set('Access-Control-Allow-Headers', 'Authorization, Content-Type');
         }
         if ('OPTIONS' == req.method) {
-            return res.sendStatus(204);
+            return res.status(204).end();
         }
         next();
     });
 
-    // parse body of request
-    router.use(bodyParser.json());
-
     // register param and methods
-    addRestParams(router, config);
-    addRestMethods(router, config);
+    setRestParams(router, options);
+    setRestMethods(router, options);
 
     // at last send json result or error
     router.use(function (req, res, next) {
-        if (res.locals.count) {
-            res.append('X-Total-Count', res.locals.count);
+        if (res.locals.status) {
+            res.status(res.locals.status);
         }
         if (res.locals.json) {
-            res.json(res.locals.json);
+            res.type('application/json');
+            res.send(util.serialize(res.locals.json));
         }
-        next();
+        else {
+            next();
+        }
     });
 
     // error handling
     router.use(function (err, req, res, next) {
-        if (typeof (err) === 'object') {
-            res.status(err.status || 400);
-            res.send(err.message || 'unknown error');
+        if (!err || !err.message) {
+            err = {
+                message: err ? err.toString() : 'unknown error'
+            };
         }
-        else {
-            res.status(400);
-            res.send(err.toString());
-        }
+        res.status(err.status || 400);
+        res.send(util.serialize(err));
     });
 
     /**
@@ -61,11 +61,11 @@ module.exports = function (config) {
      * @param {string} collection's name, wich is used for publication in REST calls
      * @param {object) NeDB Datastore options
      */
-    router.addDatastore = function (collection, options) {
-        options.compareStrings = function (a, b) {
+    router.addDatastore = function (collection, config) {
+        config.compareStrings = function (a, b) {
             return (a + '').localeCompare(b);
         };
-        config.collections[collection] = new nedb(options);
+        options.collections[collection] = new nedb(config);
     };
 
     // return router
