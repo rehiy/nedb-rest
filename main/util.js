@@ -1,7 +1,7 @@
 var util = {
 
     replacer: function (k, v) {
-        if (v) {
+        if (k && v) {
             if (typeof this[k].test === 'function') {
                 return '$regex:' + this[k].toString();
             }
