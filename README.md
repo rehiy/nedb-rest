@@ -1,4 +1,4 @@
-# express-nedb-rest
+# nedb-rest
 REST API for [NeDB](https://github.com/louischatriot/nedb) database, based on [express](http://expressjs.com/) HTTP server.
 
 The API enables client sided javascript components to access database content via HTTP RESTful calls.
@@ -159,3 +159,10 @@ If your query finds no document, you will get a 404-error code, instead of an em
 Example:
 
 ```HTTP GET /nedb/fruits?$filter={"name":"apple"}&$single```
+
+## <a name="Serialize">Serialize and Unserialize</a>
+
+Normally, the $filter, $sort and body data needs to be serialized. And response data needs to be unserialized.
+You can use the following tools to do these operations.
+
+```var util = require('nedb-rest/main/util');```

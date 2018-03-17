@@ -78,36 +78,6 @@
             xhr.send(form.request.value);
             return false;
         }
-        function serialize(obj) {
-            return JSON.stringify(obj, function (k, v) {
-                if (k && v) {
-                    if (typeof this[k].test === 'function') {
-                        return '$regex:' + this[k].toString();
-                    }
-                    if (typeof this[k].getTime === 'function') {
-                        return '$date:' + this[k].getTime();
-                    }
-                }
-                return v;
-            });
-        }
-        function unserialize(raw) {
-            return JSON.parse(raw, function (k, v) {
-                if (typeof (v) === 'string') {
-                    if (v.indexOf('$date:') === 0) {
-                        v = v.replace('$date:', '');
-                        return new Date(parseInt(v, 10));
-                    }
-                    if (v.indexOf('$regex:') === 0) {
-                        v = v.replace('$regex:', '').split('/');
-                        let flags = v.pop();
-                        let regex = v.slice(1).join('/');
-                        return new RegExp(regex, flags);
-                    }
-                }
-                return v;
-            });
-        }
     </script>
 </body>
 
