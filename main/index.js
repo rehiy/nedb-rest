@@ -48,9 +48,21 @@ module.exports = function (options) {
     // error handling
     router.use(function (err, req, res, next) {
         let error = {
-            status: err && err.status || 400,
-            message: err && err.toString() || 'unknown error'
+            status = 400, message: 'unknown error'
         };
+        if (err) {
+            if (typeof (err) == 'string') {
+                error.message = err;
+            }
+            else if (typeof (err) == 'object') {
+                error.status = err.status || 400;
+                if (err.toString().indexOf('[') !== 0) {
+                    error.message = err.toString() || 'unknown error';
+                } else {
+                    error.message = err.message || 'unknown error';
+                }
+            }
+        }
         res.status(error.status);
         res.send(util.serialize(error));
     });
