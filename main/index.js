@@ -48,7 +48,7 @@ module.exports = function (options) {
     // error handling
     router.use(function (err, req, res, next) {
         let error = {
-            status = 400, message: 'unknown error'
+            status: 400, message: 'unknown error'
         };
         if (err) {
             if (typeof (err) == 'string') {
