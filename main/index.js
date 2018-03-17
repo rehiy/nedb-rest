@@ -47,13 +47,12 @@ module.exports = function (options) {
 
     // error handling
     router.use(function (err, req, res, next) {
-        if (!err || !err.message) {
-            err = {
-                message: err ? err.toString() : 'unknown error'
-            };
-        }
-        res.status(err.status || 400);
-        res.send(util.serialize(err));
+        let error = {
+            status: err && err.status || 400,
+            message: err && err.toString() || 'unknown error'
+        };
+        res.status(error.status);
+        res.send(util.serialize(error));
     });
 
     /**
