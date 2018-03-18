@@ -24,6 +24,9 @@ var Util = {
                 var regex = v.slice(1).join('/');
                 return new RegExp(regex, flags);
             }
+            if (k == '$where' && !/[\(\)]/.test(v)) {
+                return new Function('return ' + v);
+            }
         }
         return v;
     },
