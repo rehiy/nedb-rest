@@ -47,12 +47,27 @@ module.exports = function (router, options) {
         }
         req.query.$filter || (req.query.$filter = {});
 
+        if (req.query.$option) {
+            try {
+                var $option = decodeURIComponent(req.query.$option);
+                req.query.$option = util.unserialize($option);
+            }
+            catch (e) {
+                return next({
+                    status: 400, // Bad Request
+                    message: 'unvalid $option. ' + e.message
+                });
+            }
+        }
+        req.query.$option || (req.query.$option = {});
+
         next();
     });
 
     // add object id from uri to request
     router.param('id', function (req, res, next, id) {
-        req.id = id;
+        req.query.$filter._id = id;
+        req.query.$single = 1;
         next();
     });
 

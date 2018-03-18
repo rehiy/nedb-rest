@@ -21,7 +21,7 @@ module.exports = function (router, options) {
     });
 
     //--------------------------------------------------------------------------
-    router.get('/:collection', function (req, res, next) {
+    router.get('/:collection/:id?', function (req, res, next) {
         // count of documents requested
         if (typeof (req.query.$count) != 'undefined') {
             req.nedb.count(req.query.$filter, function (err, count) {
@@ -74,24 +74,6 @@ module.exports = function (router, options) {
     });
 
     //--------------------------------------------------------------------------
-    router.get('/:collection/:id', function (req, res, next) {
-        req.nedb.findOne({ _id: req.id }, function (err, doc) {
-            if (err) {
-                return next(err);
-            }
-            if (!doc) {
-                return next({
-                    status: 404, // Not found
-                    message: 'document not found'
-                });
-            }
-            res.locals.status = 200;
-            res.locals.json = doc;
-            next();
-        });
-    });
-
-    //--------------------------------------------------------------------------
     router.post('/:collection', function (req, res, next) {
         if (!req.body || typeof (req.body) != 'object') {
             return next({
@@ -111,56 +93,20 @@ module.exports = function (router, options) {
     });
 
     //--------------------------------------------------------------------------
-    router.delete('/:collection', function (req, res, next) {
+    router.put('/:collection/:id?', function (req, res, next) {
         if (Object.keys(req.query.$filter).length == 0) {
             return next({
                 status: 400, // Bad Request
                 message: '$filter is missing'
             });
         }
-        req.nedb.remove(req.query.$filter, { multi: true }, function (err, count) {
-            if (err) {
-                return next(err);
-            }
-            if (count == 0) {
-                return next({
-                    status: 404, // Not found
-                    message: 'no document found to delete'
-                });
-            }
-            res.locals.status = 204;
-            res.locals.json = { count: count };
-            next();
-        });
-    });
-
-    //--------------------------------------------------------------------------
-    router.delete('/:collection/:id', function (req, res, next) {
-        req.nedb.remove({ _id: req.id }, { multi: false }, function (err, count) {
-            if (err) {
-                return next(err);
-            }
-            if (count != 1) {
-                return next({
-                    status: 404, // Not found
-                    message: 'no document found to delete'
-                });
-            }
-            res.locals.status = 204;
-            res.locals.json = { count: count };
-            next();
-        });
-    });
-
-    //--------------------------------------------------------------------------
-    router.put('/:collection', function (req, res, next) {
         if (!req.body || typeof (req.body) != 'object') {
             return next({
                 status: 400, // Bad Request
                 message: 'no request body'
             });
         }
-        req.nedb.update(req.query.$filter, req.body, { multi: true }, function (err, count, docs) {
+        req.nedb.update(req.query.$filter, req.body, req.query.$option, function (err, count) {
             if (err) {
                 return next(err);
             }
@@ -177,21 +123,15 @@ module.exports = function (router, options) {
     });
 
     //--------------------------------------------------------------------------
-    router.put('/:collection/:id', function (req, res, next) {
-        if (!req.body || typeof (req.body) != 'object') {
-            return next({
-                status: 400, // Bad Request
-                message: 'No Request Body'
-            });
-        }
-        req.nedb.update({ _id: req.id }, req.body, { multi: false }, function (err, count) {
+    router.delete('/:collection/:id?', function (req, res, next) {
+        req.nedb.remove(req.query.$filter, req.query.$option, function (err, count) {
             if (err) {
                 return next(err);
             }
-            if (count != 1) {
+            if (count == 0) {
                 return next({
                     status: 404, // Not found
-                    message: 'no document found to update'
+                    message: 'no document found to delete'
                 });
             }
             res.locals.status = 204;
