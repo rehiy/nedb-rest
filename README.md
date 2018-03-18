@@ -162,7 +162,7 @@ Example:
 
 ## <a name="Serialize">Serialize and Unserialize</a>
 
-Normally, the $filter, $sort and body data needs to be serialized. And response data needs to be unserialized.
+Normally, the $filter, $option, $sort and body data needs to be serialized. And response data needs to be unserialized.
 You can use the following tools to do these operations.
 
 ```var util = require('nedb-rest/main/util');```
